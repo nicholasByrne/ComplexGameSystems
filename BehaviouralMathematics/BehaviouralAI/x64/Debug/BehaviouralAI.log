@@ -1,0 +1,27 @@
+﻿  BaseNPC.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  UtilitySystemApplication.cpp
+  UtilityNPC.cpp
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwInit referenced in function "protected: virtual bool __cdecl BaseApplication::createWindow(char const *,int,int)" (?createWindow@BaseApplication@@MEAA_NPEBDHH@Z)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwTerminate referenced in function "protected: virtual bool __cdecl BaseApplication::createWindow(char const *,int,int)" (?createWindow@BaseApplication@@MEAA_NPEBDHH@Z)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwCreateWindow referenced in function "protected: virtual bool __cdecl BaseApplication::createWindow(char const *,int,int)" (?createWindow@BaseApplication@@MEAA_NPEBDHH@Z)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwDestroyWindow referenced in function "protected: virtual bool __cdecl BaseApplication::createWindow(char const *,int,int)" (?createWindow@BaseApplication@@MEAA_NPEBDHH@Z)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwSetWindowSizeCallback referenced in function "protected: virtual bool __cdecl BaseApplication::createWindow(char const *,int,int)" (?createWindow@BaseApplication@@MEAA_NPEBDHH@Z)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwPollEvents referenced in function "public: void __cdecl BaseApplication::run(void)" (?run@BaseApplication@@QEAAXXZ)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwGetTime referenced in function "public: void __cdecl BaseApplication::run(void)" (?run@BaseApplication@@QEAAXXZ)
+BaseNPC.obj : error LNK2001: unresolved external symbol glfwGetTime
+World.obj : error LNK2001: unresolved external symbol glfwGetTime
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwMakeContextCurrent referenced in function "protected: virtual bool __cdecl BaseApplication::createWindow(char const *,int,int)" (?createWindow@BaseApplication@@MEAA_NPEBDHH@Z)
+BaseApplication.obj : error LNK2019: unresolved external symbol glfwSwapBuffers referenced in function "public: void __cdecl BaseApplication::run(void)" (?run@BaseApplication@@QEAAXXZ)
+Camera.obj : error LNK2019: unresolved external symbol glfwGetWindowSize referenced in function "public: struct glm::tvec3<float,0> __cdecl Camera::pickAgainstPlane(float,float,struct glm::tvec4<float,0> const &)const " (?pickAgainstPlane@Camera@@QEBA?AU?$tvec3@M$0A@@glm@@MMAEBU?$tvec4@M$0A@@3@@Z)
+UtilitySystemApplication.obj : error LNK2001: unresolved external symbol glfwGetWindowSize
+Camera.obj : error LNK2019: unresolved external symbol glfwGetKey referenced in function "public: void __cdecl Camera::update(float)" (?update@Camera@@QEAAXM@Z)
+UtilitySystemApplication.obj : error LNK2001: unresolved external symbol glfwGetKey
+Camera.obj : error LNK2019: unresolved external symbol glfwGetMouseButton referenced in function "public: void __cdecl Camera::update(float)" (?update@Camera@@QEAAXM@Z)
+Camera.obj : error LNK2019: unresolved external symbol glfwGetCursorPos referenced in function "public: void __cdecl Camera::update(float)" (?update@Camera@@QEAAXM@Z)
+Camera.obj : error LNK2019: unresolved external symbol glfwGetCurrentContext referenced in function "public: struct glm::tvec3<float,0> __cdecl Camera::pickAgainstPlane(float,float,struct glm::tvec4<float,0> const &)const " (?pickAgainstPlane@Camera@@QEBA?AU?$tvec3@M$0A@@glm@@MMAEBU?$tvec4@M$0A@@3@@Z)
+UtilityNPC.obj : error LNK2019: unresolved external symbol "public: __cdecl BaseNPC::BaseNPC(void)" (??0BaseNPC@@QEAA@XZ) referenced in function "public: __cdecl UtilityNPC::UtilityNPC(class World *)" (??0UtilityNPC@@QEAA@PEAVWorld@@@Z)
+UtilitySystemApplication.obj : error LNK2019: unresolved external symbol glfwWindowShouldClose referenced in function "public: virtual bool __cdecl UtilitySystemApplication::update(float)" (?update@UtilitySystemApplication@@UEAA_NM@Z)
+C:\Users\nicholas.byrne\Documents\Visual Studio 2015\Projects\BehaviouralMathematics\BehaviouralAI\dep\glfw-3.1.2\src\Debug\glfw3.lib : warning LNK4272: library machine type 'X86' conflicts with target machine type 'x64'
+C:\Users\nicholas.byrne\Documents\Visual Studio 2015\Projects\BehaviouralMathematics\BehaviouralAI\x64\Debug\BehaviouralAI.exe : fatal error LNK1120: 16 unresolved externals
