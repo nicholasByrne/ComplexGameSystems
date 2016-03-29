@@ -11,6 +11,7 @@
 #include "World.h"
 #include "BaseNPC.h"
 #include "UtilityNPC.h"
+#include "AIController.h"
 
 using glm::vec3;
 using glm::vec4;
@@ -38,7 +39,12 @@ bool UtilitySystemApplication::startup() {
 	
 	m_pWorld = new World();
 	m_pNPC = new UtilityNPC(m_pWorld);
-
+	m_pAIController = new AIController(m_pWorld);
+	m_pAIController->AddNPC();
+	m_pAIController->AddNPC();
+	m_pAIController->AddNPC();
+	m_pAIController->AddNPC();
+	m_pAIController->AddNPC();
 	return true;
 }
 
@@ -67,6 +73,7 @@ bool UtilitySystemApplication::update(float deltaTime) {
 	m_camera->update(deltaTime);
 
 	m_pNPC->update(deltaTime);
+	m_pAIController->Update(deltaTime);
 
 	// clear the gizmos out for this frame
 	Gizmos::clear();
@@ -92,7 +99,7 @@ void UtilitySystemApplication::draw() {
 
 	m_pWorld->render();
 	m_pNPC->render();
-
+	m_pAIController->Draw();
 
 	// display the 3D gizmos
 	Gizmos::draw(m_camera->getProjectionView());

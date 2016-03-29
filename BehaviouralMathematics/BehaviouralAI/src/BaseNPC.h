@@ -25,7 +25,7 @@ public:
 	unsigned int getFoodValue() const { return m_uiFood; }
 	unsigned int getRestValue() const { return m_uiRested; }
 	unsigned int getNumberOfLogs() const { return m_uiNumberOfLogs; }
-	unsigned int getNumberOfHarvestedLogs() const { return m_uiNumberOfHarvestedLogs; }
+	unsigned int getRawLogs() const { return m_uiRawLogs; }
 
 	glm::vec3	 getPosition() const { return m_vPosition;  }
 protected:
@@ -38,6 +38,7 @@ protected:
 	void collectFood(float a_fdeltaTime);
 	void rest(float a_fdeltaTime);
 	
+	void harvestTree(float a_fdeltaTime);
 	void chopTree(float a_fdeltaTime);
 	void buildHouse(float a_fdeltaTime);
 	void depositStockpileLog(float a_fdeltaTime);
@@ -56,7 +57,7 @@ private:
 	unsigned int	m_uiRested;
 	
 	unsigned int	m_uiNumberOfLogs; 
-	unsigned int	m_uiNumberOfHarvestedLogs;
+	unsigned int	m_uiRawLogs;
 
 	float			m_fMoveSpeed;
 

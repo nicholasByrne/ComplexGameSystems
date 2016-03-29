@@ -1,5 +1,6 @@
 #include "UtilityNPC.h"
 #include "World.h"
+#include <iostream>
 
 UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 {
@@ -27,23 +28,23 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	//Cut Tree
 	m_cutLogValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
 	m_cutLogValue.setMinMaxValues(0, 2);
-	m_cutLogValue.setValue(getNumberOfHarvestedLogs());
+	m_cutLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
 	UtilityScore* pLogSource = new UtilityScore();
-	pLogSource->addUtilityValue(&m_cutLogValue, 1.0f);
+	pLogSource->addUtilityValue(&m_cutLogValue, 0.5f );
 	m_pUtilityScoreMap["harvestLog"] = pLogSource;
 	//Take Log to Stockpile
 	m_depositLogValue.setNormalizationType(UtilityValue::LINEAR);
 	m_depositLogValue.setMinMaxValues(0, 2);
-	m_depositLogValue.setValue(getNumberOfHarvestedLogs());
+	m_depositLogValue.setValue(getRawLogs());
 	UtilityScore* pLogToStockpile = new UtilityScore();
-	pLogToStockpile->addUtilityValue(&m_depositLogValue, 1.0f);
+	pLogToStockpile->addUtilityValue(&m_depositLogValue, 0.5f);
 	m_pUtilityScoreMap["depositLog"] = pLogToStockpile;
 	//Collect Log from Stockpile
-	m_collectLogValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
+	m_collectLogValue.setNormalizationType(UtilityValue::LINEAR);
 	m_collectLogValue.setMinMaxValues(0, 1);
 	m_collectLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
 	UtilityScore* pCollectLog = new UtilityScore();
-	pCollectLog->addUtilityValue(&m_collectLogValue, 1.0f);
+	pCollectLog->addUtilityValue(&m_collectLogValue, 0.5f);
 	m_pUtilityScoreMap["collectLog"] = pCollectLog;
 
 	//Build House		//NPC needs to know stockpile stock
@@ -51,12 +52,13 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	m_buildHouseValue.setMinMaxValues(0, 1);
 	m_buildHouseValue.setValue(getNumberOfLogs());
 	UtilityScore* pBuildHouse = new UtilityScore();
-	pBuildHouse->addUtilityValue(&m_buildHouseValue, 1.0f);
+	pBuildHouse->addUtilityValue(&m_buildHouseValue, 0.5f);
 	m_pUtilityScoreMap["buildHouse"] = pBuildHouse;	
 }
 
 UtilityNPC::~UtilityNPC()
 {
+
 }
 
 void UtilityNPC::selectAction(float a_fdeltaTime)
@@ -65,8 +67,8 @@ void UtilityNPC::selectAction(float a_fdeltaTime)
 	m_waterValue.setValue(getWaterValue());
 	m_foodValue.setValue(getFoodValue());
 	m_restValue.setValue(getRestValue());
-	m_cutLogValue.setValue(getNumberOfHarvestedLogs());
-	m_depositLogValue.setValue(getNumberOfHarvestedLogs());
+	m_cutLogValue.setValue(getRawLogs());
+	m_depositLogValue.setValue(getNumberOfLogs());
 	m_collectLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
 	m_buildHouseValue.setValue(getNumberOfLogs());
 
@@ -98,20 +100,23 @@ void UtilityNPC::selectAction(float a_fdeltaTime)
 	}
 	else if (strBestAction == "harvestLog")
 	{
-		chopTree(a_fdeltaTime);
+		harvestTree(a_fdeltaTime);
 	}
-	else if (strBestAction == "depositLog")
-	{
-		depositStockpileLog(a_fdeltaTime);
-	}
-	else if (strBestAction == "collectLog")
-	{
-		collectStockpileLog(a_fdeltaTime);
-	}
+	//else if (strBestAction == "depositLog")
+	//{
+	//	depositStockpileLog(a_fdeltaTime);
+	//}
+	//else if (strBestAction == "collectLog")
+	//{
+	//	collectStockpileLog(a_fdeltaTime);
+	//}
 	else
 	{
+
 		buildHouse(a_fdeltaTime);
 	}
 	
+	//std::cout << strBestAction.c_str << std::endl;
+
 
 }

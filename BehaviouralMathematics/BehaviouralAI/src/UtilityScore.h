@@ -17,6 +17,9 @@ namespace UtilitySystem
 		void addUtilityValue(UtilityValue* a_pValue, float a_fModifier);
 
 		float getUtilityScore();
+
+		//void addUtilityScore(UtilityScore* a_pScore);
+		
 	private:
 		struct UtilityInfo
 		{
@@ -24,6 +27,7 @@ namespace UtilitySystem
 			float		  fModifier;
 		};
 		std::vector<UtilityInfo> m_vUtilityValues;
+		//std::vector<UtilityScore*> m_vUtilityScores;
 	};
 
 }

@@ -25,7 +25,7 @@ BaseNPC::BaseNPC(World* a_pWorld)
 	m_uiRested = 30;
 
 	m_uiNumberOfLogs = 0;
-	m_uiNumberOfHarvestedLogs = 0;
+	m_uiRawLogs = 0;
 
 
 	m_fLastFoodReductionTime = 0.0f;
@@ -96,13 +96,25 @@ void BaseNPC::rest(float a_fdeltaTime)
 	}
 }
 
+void BaseNPC::harvestTree(float a_fdeltaTime)
+{
+	if (m_uiRawLogs <= 0)
+	{
+		chopTree(a_fdeltaTime);
+	}
+	else
+	{
+		depositStockpileLog(a_fdeltaTime);
+	}
+}
+
 void BaseNPC::chopTree(float a_fdeltaTime)
 {
 	if (travelTo(m_pWorld->getTreeLocation(), a_fdeltaTime))
 	{
 		if (m_pWorld->interactWithTree())
 		{
-			m_uiNumberOfHarvestedLogs++;
+			m_uiRawLogs++;
 			std::cout << "Collected Log!" << std::endl;
 		}
 	}
@@ -110,6 +122,18 @@ void BaseNPC::chopTree(float a_fdeltaTime)
 
 void BaseNPC::buildHouse(float a_fdeltaTime)
 {
+	if (m_uiNumberOfLogs <= 0)
+	{
+		if (travelTo(m_pWorld->getStockpileLocation(), a_fdeltaTime))
+		{
+			if (m_pWorld->interactWithStockpile())
+			{
+				m_pWorld->removeLogFromStockpile();
+				m_uiNumberOfLogs++;
+			}
+		}
+	}
+
 	if (travelTo(m_pWorld->getHouseLocation(), a_fdeltaTime))
 	{
 		if (m_uiNumberOfLogs <= 0)
@@ -132,7 +156,7 @@ void BaseNPC::depositStockpileLog(float a_fdeltaTime)
 {
 	if (travelTo(m_pWorld->getStockpileLocation(), a_fdeltaTime))
 	{
-		if (m_uiNumberOfHarvestedLogs <= 0)
+		if (m_uiRawLogs <= 0)
 		{
 			std::cout << "Don't have any logs to place in stockpile :(" << std::endl;
 		}
@@ -140,7 +164,7 @@ void BaseNPC::depositStockpileLog(float a_fdeltaTime)
 		{
 			if (m_pWorld->interactWithStockpile())
 			{
-				m_uiNumberOfHarvestedLogs--;
+				m_uiRawLogs--;
 				std::cout << "Placed log in stockpile!" << std::endl;
 				m_pWorld->addLogToStockpile();
 			}
@@ -154,8 +178,16 @@ void BaseNPC::collectStockpileLog(float a_fdeltaTime)
 	{
 		if (m_pWorld->interactWithStockpile())
 		{
-			m_uiNumberOfLogs++;
-			std::cout << "Collected log from stockpile!" << std::endl;
+			if (m_pWorld->getCurrentStockpileLogs() > 0)
+			{
+				m_pWorld->removeLogFromStockpile();
+				m_uiNumberOfLogs++;
+				std::cout << "Collected log from stockpile!" << std::endl;
+			}
+			else
+			{
+				std::cout << "Stockpile has no logs!" << std::endl;
+			}
 		}
 	}
 }
@@ -213,7 +245,7 @@ void BaseNPC::reportStatus()
 		std::cout << ", Water: " << m_uiWater;
 		std::cout << ", Rest: " << m_uiRested;
 		std::cout << ", Logs: " << m_uiNumberOfLogs;
-		std::cout << ", HarvLogs: " << m_uiNumberOfHarvestedLogs;
+		std::cout << ", RawLogs: " << m_uiRawLogs;
 		std::cout << " }" << std::endl;
 	}
 }

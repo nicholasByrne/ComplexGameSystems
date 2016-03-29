@@ -2,6 +2,10 @@
 #define WORLD_H_
 
 #include "glm/glm.hpp"
+#include <list>
+
+class UtilityNPC;
+class WorldObject;
 
 class World
 {
@@ -19,6 +23,10 @@ public:
 	void addLogToStockpile();
 	void removeLogFromStockpile();
 	unsigned int getCurrentStockpileLogs() const { return m_uiStockpileCurrentLogs; }
+	unsigned int getMaxStockpileLogs() const { m_uiStockpileMaxLogs; }
+
+	std::list<UtilityNPC*> NPCList;
+	std::list<WorldObject*> worldObjectList;
 
 	glm::vec3 getHouseLocation() const;
 	glm::vec3 getTreeLocation() const;
@@ -39,6 +47,7 @@ private:
 	unsigned int m_uiHouseLogsRequired;
 	unsigned int m_uiHouseCurrentLogs;
 	unsigned int m_uiStockpileCurrentLogs;
+	unsigned int m_uiStockpileMaxLogs;
 
 	glm::vec3 m_houseLocation;
 	glm::vec3 m_treeLocation;

@@ -8,6 +8,7 @@
 class Camera;
 class World;
 class BaseNPC;
+class AIController;
 
 class UtilitySystemApplication : public BaseApplication {
 public:
@@ -25,7 +26,7 @@ private:
 
 	Camera*		m_camera;
 
-
+	AIController* m_pAIController;
 	World*		m_pWorld;
 	BaseNPC*	m_pNPC;
 };
