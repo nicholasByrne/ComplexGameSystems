@@ -45,6 +45,10 @@ protected:
 	void collectStockpileLog(float a_fdeltaTime);
 
 	World*			m_pWorld;
+
+	float			m_fLastReportTime;
+	float			m_fReportTime;
+
 private:
 	bool travelTo(glm::vec3 a_vLoc, float a_fDeltaTime);
 	
@@ -63,8 +67,8 @@ private:
 
 	bool			m_bAlive;
 
-	float			m_fLastReportTime;
-	float			m_fReportTime;
+	//float			m_fLastReportTime;
+	//float			m_fReportTime;
 
 
 	float			m_fLastFoodReductionTime;

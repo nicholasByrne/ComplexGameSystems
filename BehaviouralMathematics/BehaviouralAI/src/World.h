@@ -3,9 +3,15 @@
 
 #include "glm/glm.hpp"
 #include <list>
+#include <vector>
 
 class UtilityNPC;
 class WorldObject;
+class House;
+class Food;
+class Water;
+class Rest;
+class Tree;
 
 class World
 {
@@ -13,6 +19,7 @@ public:
 	World();
 	~World();
 
+	void update(float a_fdeltaTime);
 	void render();
 
 	void addLogToHouse();
@@ -27,6 +34,11 @@ public:
 
 	std::list<UtilityNPC*> NPCList;
 	std::list<WorldObject*> worldObjectList;
+	std::vector<House*> houseVector;
+	std::vector<Food*> foodVector;
+	std::vector<Water*> waterVector;
+	std::vector<Rest*> restVector;
+	std::vector<Tree*> treeVector;
 
 	glm::vec3 getHouseLocation() const;
 	glm::vec3 getTreeLocation() const;
@@ -42,6 +54,17 @@ public:
 	bool interactWithTree();
 	bool interactWithHouse();
 	bool interactWithStockpile();
+
+	void BuildNewFood(glm::vec3 a_location);
+	void BuildNewWater(glm::vec3 a_location);
+	void BuildNewRest(glm::vec3 a_location);
+	void BuildNewTree(glm::vec3 a_location);
+	void BuildNewHouse(glm::vec3 a_location);
+	
+	glm::vec3 FindClosestFood(glm::vec3 a_myLoc);
+	glm::vec3 FindClosestWater(glm::vec3 a_myLoc);
+	glm::vec3 FindClosestRest(glm::vec3 a_myLoc);
+	glm::vec3 FindClosestTree(glm::vec3 a_myLoc);
 
 private:
 	unsigned int m_uiHouseLogsRequired;

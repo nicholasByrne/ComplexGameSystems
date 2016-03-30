@@ -20,11 +20,18 @@ private:
 	std::map<std::string, UtilityScore*> m_pUtilityScoreMap;
 
 	UtilityValue m_waterValue;
+	UtilityValue m_waterDistValue;
 	UtilityValue m_foodValue;
+	UtilityValue m_foodDistValue;
 	UtilityValue m_restValue;
+	UtilityValue m_restDistValue;
 	UtilityValue m_cutLogValue;
 	UtilityValue m_depositLogValue;
 	UtilityValue m_collectLogValue;
 	UtilityValue m_buildHouseValue;
+
+	
+	
+	
 };
 

@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "Buildings.h"
+
 World::World()
 {
 	m_houseLocation = glm::vec3(10, 0, -10);
@@ -15,6 +17,13 @@ World::World()
 	m_waterLocation = glm::vec3(0, 0, 10);
 	m_restedLocation = glm::vec3(-10, 0, 10);
 	m_stockpileLocation = glm::vec3(5, 0, 5);
+
+	BuildNewFood(m_foodLocation);
+	BuildNewHouse(m_houseLocation);
+	BuildNewRest(m_restedLocation);
+	BuildNewTree(m_treeLocation);
+	BuildNewWater(m_waterLocation);
+	
 
 	m_uiHouseCurrentLogs = 4;
 	m_uiHouseLogsRequired = 10;
@@ -40,6 +49,31 @@ World::~World()
 
 }
 
+void World::update(float a_fdeltaTime)
+{
+	//Update vectors
+	for (std::vector<House*>::const_iterator iter = houseVector.begin(); iter != houseVector.end(); iter++)
+	{
+		(*iter)->Update(a_fdeltaTime);
+	}
+	for (std::vector<Food*>::const_iterator iter = foodVector.begin(); iter != foodVector.end(); iter++)
+	{
+		(*iter)->Update(a_fdeltaTime);
+	}
+	for (std::vector<Water*>::const_iterator iter = waterVector.begin(); iter != waterVector.end(); iter++)
+	{
+		(*iter)->Update(a_fdeltaTime);
+	}
+	for (std::vector<Rest*>::const_iterator iter = restVector.begin(); iter != restVector.end(); iter++)
+	{
+		(*iter)->Update(a_fdeltaTime);
+	}
+	for (std::vector<Tree*>::const_iterator iter = treeVector.begin(); iter != treeVector.end(); iter++)
+	{
+		(*iter)->Update(a_fdeltaTime);
+	}
+}
+
 void World::render()
 {
 	Gizmos::addSphere(m_foodLocation, 1, 8, 8, glm::vec4(1, 0, 0, 1));
@@ -56,6 +90,28 @@ void World::render()
 
 	float m_fStockpileHeight = 1 * ((float)m_uiStockpileCurrentLogs) / 4;
 	Gizmos::addAABBFilled(m_stockpileLocation + glm::vec3(0, m_fStockpileHeight, 0), glm::vec3(3, m_fStockpileHeight, 2), glm::vec4(1, 1, 1, 1));
+
+	//Render vectors
+	for (std::vector<House*>::const_iterator iter = houseVector.begin(); iter != houseVector.end(); iter++)
+	{
+		(*iter)->Render();
+	}
+	for (std::vector<Food*>::const_iterator iter = foodVector.begin(); iter != foodVector.end(); iter++)
+	{
+		(*iter)->Render();
+	}
+	for (std::vector<Water*>::const_iterator iter = waterVector.begin(); iter != waterVector.end(); iter++)
+	{
+		(*iter)->Render();
+	}
+	for (std::vector<Rest*>::const_iterator iter = restVector.begin(); iter != restVector.end(); iter++)
+	{
+		(*iter)->Render();
+	}
+	for (std::vector<Tree*>::const_iterator iter = treeVector.begin(); iter != treeVector.end(); iter++)
+	{
+		(*iter)->Render();
+	}
 }
 
 void World::addLogToHouse()
@@ -142,6 +198,36 @@ bool World::interactWithStockpile()
 	return false;
 }
 
+void World::BuildNewFood(glm::vec3 a_location)
+{
+	Food* newFood = new Food(a_location);
+	foodVector.push_back(newFood);
+}
+
+void World::BuildNewWater(glm::vec3 a_location)
+{
+	Water* newWater = new Water(a_location);
+	waterVector.push_back(newWater);
+}
+
+void World::BuildNewRest(glm::vec3 a_location)
+{
+	Rest* newRest = new Rest(a_location);
+	restVector.push_back(newRest);
+}
+
+void World::BuildNewTree(glm::vec3 a_location)
+{
+	Tree* newTree = new Tree(a_location);
+	treeVector.push_back(newTree);
+}
+
+void World::BuildNewHouse(glm::vec3 a_location)
+{
+	House* newHouse = new House(a_location);
+	houseVector.push_back(newHouse);
+}
+
 glm::vec3 World::getRestedLocation() const
 {
 	return m_restedLocation;
@@ -171,4 +257,57 @@ glm::vec3 World::getTreeLocation() const
 glm::vec3 World::getHouseLocation() const
 {
 	return m_houseLocation;
+}
+
+
+glm::vec3 World::FindClosestFood(glm::vec3 a_myLoc)
+{
+	glm::vec3 closest = foodVector[0]->getLocation();
+	for (std::vector<Food*>::iterator it = foodVector.begin(); it != foodVector.end(); it++)
+	{
+		if (glm::distance(a_myLoc, (*it)->getLocation()) < glm::distance(a_myLoc, closest));
+		{
+			closest = (*it)->getLocation();
+		}
+	}
+	return closest;
+}
+
+glm::vec3 World::FindClosestWater(glm::vec3 a_myLoc)
+{
+	glm::vec3 closest = waterVector[0]->getLocation();
+	for (std::vector<Water*>::iterator it = waterVector.begin(); it != waterVector.end(); it++)
+	{
+		if (glm::distance(a_myLoc, (*it)->getLocation()) < glm::distance(a_myLoc, closest));
+		{
+			closest = (*it)->getLocation();
+		}
+	}
+	return closest;
+}
+
+glm::vec3 World::FindClosestRest(glm::vec3 a_myLoc)
+{
+	glm::vec3 closest = restVector[0]->getLocation();
+	for (std::vector<Rest*>::iterator it = restVector.begin(); it != restVector.end(); it++)
+	{
+		if (glm::distance(a_myLoc, (*it)->getLocation()) < glm::distance(a_myLoc, closest));
+		{
+			closest = (*it)->getLocation();
+		}
+	}
+	return closest;
+}
+
+glm::vec3 World::FindClosestTree(glm::vec3 a_myLoc)
+{
+	glm::vec3 closest = treeVector[0]->getLocation();
+	for (std::vector<Tree*>::iterator it = treeVector.begin(); it != treeVector.end(); it++)
+	{
+		if (glm::distance(a_myLoc, (*it)->getLocation()) < glm::distance(a_myLoc, closest));
+		{
+			closest = (*it)->getLocation();
+		}
+	}
+	return closest;
 }

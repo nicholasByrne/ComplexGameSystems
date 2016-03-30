@@ -40,11 +40,11 @@ bool UtilitySystemApplication::startup() {
 	m_pWorld = new World();
 	m_pNPC = new UtilityNPC(m_pWorld);
 	m_pAIController = new AIController(m_pWorld);
-	m_pAIController->AddNPC();
-	m_pAIController->AddNPC();
-	m_pAIController->AddNPC();
-	m_pAIController->AddNPC();
-	m_pAIController->AddNPC();
+	//m_pAIController->AddNPC();
+	//m_pAIController->AddNPC();
+	//m_pAIController->AddNPC();
+	//m_pAIController->AddNPC();
+	//m_pAIController->AddNPC();
 	return true;
 }
 

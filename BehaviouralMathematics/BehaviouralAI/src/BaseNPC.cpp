@@ -133,20 +133,22 @@ void BaseNPC::buildHouse(float a_fdeltaTime)
 			}
 		}
 	}
-
-	if (travelTo(m_pWorld->getHouseLocation(), a_fdeltaTime))
+	else// (travelTo(m_pWorld->getHouseLocation(), a_fdeltaTime))
 	{
-		if (m_uiNumberOfLogs <= 0)
+		if ((travelTo(m_pWorld->getHouseLocation(), a_fdeltaTime)))
 		{
-			std::cout << "Don't have any logs to build with :(" << std::endl;
-		}
-		else
-		{
-			if (m_pWorld->interactWithHouse())
+			if (m_uiNumberOfLogs <= 0)
 			{
-				m_uiNumberOfLogs--;
-				std::cout << "Built House!" << std::endl;
-				m_pWorld->addLogToHouse();
+				std::cout << "Don't have any logs to build with :(" << std::endl;
+			}
+			else
+			{
+				if (m_pWorld->interactWithHouse())
+				{
+					m_uiNumberOfLogs--;
+					std::cout << "Built House!" << std::endl;
+					m_pWorld->addLogToHouse();
+				}
 			}
 		}
 	}
