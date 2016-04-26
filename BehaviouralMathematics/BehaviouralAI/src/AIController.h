@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <list>
 #include <map>
+#include <vector>
+#include <iostream>
 
 class World;
 
@@ -25,10 +27,60 @@ public:
 	glm::vec3 FindClosestRest(glm::vec3 a_myLoc);
 	glm::vec3 FindClosestTree(glm::vec3 a_myLoc);
 
-	//make a find building to build function?
-	//makes rest/water/food dist functions
+	float CalculateFoodDemand();
+	float CalculateFoodSupply();
+
+	float CalculateWaterDemand();
+	float CalculateWaterSupply();
+
+	float CalculateHouseDemand();
+	float CalculateHouseSupply();
+
+	void CalculateNPCJobs();
+	
 
 private:
 	World* m_pWorld;
+
+	std::map<std::string, UtilityScore*> m_pUtilityScoreMap;
+
+	UtilityValue m_farmerValue;
+	UtilityValue m_builderValue;
+	UtilityValue m_harvesterValue;
+
+	//enum NPCJob { Child, Farmer, Builder, Harvester, Dead Unemployed };
+	std::vector<NPCJob> m_NPCJobVector;
 };
 
+
+
+
+
+
+
+
+
+
+
+//make remove logstockpile return bool, confirm actually has log
+
+
+//Fix NPC map //Harvesting food
+
+
+//make a find building to build function?
+//makes rest/water/food dist functions
+//Babies // Take time to grow? while not working
+//Give npcs coloured cube on head for job?
+//BaseNPC // make wander function (take in size of grid?)
+//Set map according to enum (job?)
+
+
+//Make AIController use utility scores?
+//Assign builders/Farmers/Harvesters according to demand
+//Demands = food/water?/Houses/Logs
+//Vector[npcs] of enums for jobs?
+//Child/Farmer/Harvester/Builder/Dead
+//
+//
+//

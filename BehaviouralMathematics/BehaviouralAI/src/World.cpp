@@ -28,6 +28,9 @@ World::World()
 	m_uiHouseCurrentLogs = 4;
 	m_uiHouseLogsRequired = 10;
 	m_uiStockpileCurrentLogs = 0;
+	m_uiStockpileMaxLogs = 10;
+	m_uiStockpileCurrentFood = 20;
+	m_uiStockpileMaxFood = 200;
 
 	m_fRestedInteractTime = 1.0f;
 	m_fWaterInteractTime = 2.0f;
@@ -120,14 +123,90 @@ void World::addLogToHouse()
 		m_uiHouseCurrentLogs++;
 }
 
-void World::addLogToStockpile()
+float World::addLogsToStockpile(unsigned int logs)
 {
-	m_uiStockpileCurrentLogs++;
+	if (m_uiStockpileCurrentLogs < m_uiStockpileMaxLogs)
+	{
+		if (m_uiStockpileCurrentLogs + logs <= m_uiStockpileMaxLogs)
+		{
+			m_uiStockpileCurrentLogs += logs;
+			return 0;
+		}
+		else
+		{
+			while (m_uiStockpileCurrentLogs < m_uiStockpileMaxLogs)
+			{
+				m_uiStockpileCurrentLogs++;
+				logs--;
+			}
+			return logs;
+		}
+	}
+	else
+		return logs;
+
+	//m_uiStockpileCurrentLogs += logs;
 }
 
-void World::removeLogFromStockpile()
+float World::removeLogsFromStockpile(unsigned int logs)
 {
-	m_uiStockpileCurrentLogs--;
+	if (m_uiStockpileCurrentLogs > 0)
+	{
+		unsigned int Takeout = 0;
+		while (m_uiStockpileCurrentLogs > 0)
+		{
+			m_uiStockpileCurrentLogs--;
+			Takeout++;
+		}
+		return Takeout;
+	}
+	else return 0;
+}
+
+float World::addFoodToStockpile(unsigned int amount)
+{
+	if (m_uiStockpileCurrentFood < m_uiStockpileMaxFood)
+	{
+		if (m_uiStockpileCurrentFood + amount <= m_uiStockpileMaxFood)
+		{
+			m_uiStockpileCurrentFood += amount;
+			return 0;
+		}
+		else
+		{
+			while (m_uiStockpileCurrentFood < m_uiStockpileMaxFood || amount > 0)
+			{
+				m_uiStockpileCurrentFood++;
+				amount--;
+			}
+			return amount;
+		}
+	}
+	else
+		return amount;
+}
+
+float World::removeFoodFromStockpile(unsigned int amount)
+{
+	if (m_uiStockpileCurrentFood > 0)
+	{
+		if (m_uiStockpileCurrentFood >= amount)
+		{
+			m_uiStockpileCurrentFood -= amount;
+			return amount;
+		}
+		else
+		{
+			unsigned int Takeout = 0;
+			while (m_uiStockpileCurrentFood > 0)
+			{
+				m_uiStockpileCurrentFood--;
+				Takeout++;
+			}
+			return Takeout;
+		}
+	}
+	else return 0;
 }
 
 bool World::interactWithFood()

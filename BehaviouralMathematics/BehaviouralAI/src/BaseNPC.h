@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 class World;
+enum NPCJob { Child, Farmer, Builder, Harvester, Dead, Unemployed };
 
 class BaseNPC
 {
@@ -28,6 +29,10 @@ public:
 	unsigned int getRawLogs() const { return m_uiRawLogs; }
 
 	glm::vec3	 getPosition() const { return m_vPosition;  }
+	float getTimeAlive() const { return m_fTimeAlive; }
+
+	NPCJob getNPCJob() const { return m_NPCJob; };
+	void AssignNPCJob(NPCJob newJob);
 protected:
 	//Called every frame by update - should call one of the behaviour functions below.
 	virtual void selectAction(float a_fdeltaTime) { collectWater(a_fdeltaTime); }
@@ -41,14 +46,20 @@ protected:
 	void harvestTree(float a_fdeltaTime);
 	void chopTree(float a_fdeltaTime);
 	void buildHouse(float a_fdeltaTime);
+	void harvestFood(float a_fdeltaTime);
 	void depositStockpileLog(float a_fdeltaTime);
 	void collectStockpileLog(float a_fdeltaTime);
+	void depositStockpileFood(float a_fdeltaTime);
+	//void collectStockpileFood(float a_fdeltaTime);
+	void wander(float a_fdeltaTime);
 
 	World*			m_pWorld;
 
 	float			m_fLastReportTime;
 	float			m_fReportTime;
+	float			m_fTimeAlive;
 
+	NPCJob m_NPCJob;
 private:
 	bool travelTo(glm::vec3 a_vLoc, float a_fDeltaTime);
 	
@@ -62,6 +73,10 @@ private:
 	
 	unsigned int	m_uiNumberOfLogs; 
 	unsigned int	m_uiRawLogs;
+	unsigned int	m_uiHarvestedFood;
+
+	float			m_fWanderTimer;
+	glm::vec3		m_wanderDest;
 
 	float			m_fMoveSpeed;
 

@@ -6,6 +6,8 @@
 
 UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 {
+	m_NPCJob = Child;
+	AssignNPCJob(Child);
 	//Get Water
 	m_waterValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
 	m_waterValue.setMinMaxValues(5, 20);
@@ -13,11 +15,6 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	UtilityScore* pWaterSource = new UtilityScore();
 	pWaterSource->addUtilityValue(&m_waterValue, 1.0f);
 	m_pUtilityScoreMap["collectWater"] = pWaterSource;
-	//Get WaterDistance
-	//m_waterDistValue.setNormalizationType(UtilityValue::LINEAR);
-	//m_waterDistValue.setMinMaxValues(10, 40);
-	//m_waterDistValue.setValue(glm::distance(getPosition(), m_pWorld->FindClosestWater(getPosition())));
-	//pWaterSource->addUtilityValue(&m_waterDistValue, 1.0f);
 	//Get Food
 	m_foodValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
 	m_foodValue.setMinMaxValues(5, 20);
@@ -25,11 +22,6 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	UtilityScore* pFoodSource = new UtilityScore();
 	pFoodSource->addUtilityValue(&m_foodValue, 1.0f);
 	m_pUtilityScoreMap["collectFood"] = pFoodSource;
-	//Get FoodDistance
-	//m_foodDistValue.setNormalizationType(UtilityValue::LINEAR);
-	//m_foodDistValue.setMinMaxValues(-10, 25);
-	//m_foodDistValue.setValue(glm::distance(getPosition(), m_pWorld->FindClosestFood(getPosition())));
-	//pFoodSource->addUtilityValue(&m_foodDistValue, 1.f);
 	//Get Rest
 	m_restValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
 	m_restValue.setMinMaxValues(5, 20);
@@ -37,11 +29,6 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	UtilityScore* pRestSource = new UtilityScore();
 	pRestSource->addUtilityValue(&m_restValue, 1.0f);
 	m_pUtilityScoreMap["collectRest"] = pRestSource;
-	//Get RestDistance
-	//m_restDistValue.setNormalizationType(UtilityValue::LINEAR);
-	//m_restDistValue.setMinMaxValues(10, 40);
-	//m_restDistValue.setValue(glm::distance(getPosition(), m_pWorld->FindClosestRest(getPosition())));
-	//pRestSource->addUtilityValue(&m_restDistValue, 1.0f);
 	//Cut Tree
 	m_cutLogValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
 	m_cutLogValue.setMinMaxValues(0, 2);
@@ -49,28 +36,32 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	UtilityScore* pLogSource = new UtilityScore();
 	pLogSource->addUtilityValue(&m_cutLogValue, 0.4f );
 	m_pUtilityScoreMap["harvestLog"] = pLogSource;
-	//Take Log to Stockpile
-	//m_depositLogValue.setNormalizationType(UtilityValue::LINEAR);
-	//m_depositLogValue.setMinMaxValues(0, 2);
-	//m_depositLogValue.setValue(getRawLogs());
-	//UtilityScore* pLogToStockpile = new UtilityScore();
-	//pLogToStockpile->addUtilityValue(&m_depositLogValue, 0.5f);
-	//m_pUtilityScoreMap["depositLog"] = pLogToStockpile;
-	//Collect Log from Stockpile
-	m_collectLogValue.setNormalizationType(UtilityValue::LINEAR);
-	m_collectLogValue.setMinMaxValues(0, 1);
-	m_collectLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
-	UtilityScore* pCollectLog = new UtilityScore();
-	pCollectLog->addUtilityValue(&m_collectLogValue, 0.5f);
-	m_pUtilityScoreMap["collectLog"] = pCollectLog;
-
+	//Harvest Food
+	m_harvestFoodValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
+	m_harvestFoodValue.setMinMaxValues(0, 50);
+	m_harvestFoodValue.setValue(m_pWorld->getCurrentStockpileFood());
+	UtilityScore* pHarvestFood = new UtilityScore();
+	pHarvestFood->addUtilityValue(&m_harvestFoodValue, 1.0f);
+	m_pUtilityScoreMap["harvestFood"] = pHarvestFood;
 	//Build House		//NPC needs to know stockpile stock
 	m_buildHouseValue.setNormalizationType(UtilityValue::LINEAR);
 	m_buildHouseValue.setMinMaxValues(0, 1);
-	m_buildHouseValue.setValue(m_pWorld->getCurrentStockpileLogs());
+	m_buildHouseValue.setValue(getNumberOfLogs() + m_pWorld->getCurrentStockpileLogs());
 	UtilityScore* pBuildHouse = new UtilityScore();
 	pBuildHouse->addUtilityValue(&m_buildHouseValue, 0.45f);
 	m_pUtilityScoreMap["buildHouse"] = pBuildHouse;	
+	//Wander Around
+	m_wanderValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
+	m_wanderValue.setMinMaxValues(0, 1);
+	m_wanderValue.setValue(0);
+	UtilityScore* pWanderSource = new UtilityScore();
+	pWanderSource->addUtilityValue(&m_wanderValue, 0.2f);
+	m_pUtilityScoreMap["wander"] = pWanderSource;
+
+	m_wanderJobValue.setNormalizationType(UtilityValue::LINEAR);
+	m_wanderJobValue.setMinMaxValues(0, 1);
+	m_wanderValue.setValue(1.f);
+	pWanderSource->addUtilityValue(&m_wanderJobValue, 1.f);
 }
 
 UtilityNPC::~UtilityNPC()
@@ -83,19 +74,21 @@ void UtilityNPC::selectAction(float a_fdeltaTime)
 	//
 	m_waterValue.setValue(getWaterValue());
 	m_foodValue.setValue(getFoodValue());
-	//m_foodDistValue.setValue(glm::distance(getPosition(), m_pWorld->FindClosestFood(getPosition())));
 	m_restValue.setValue(getRestValue());
-	//m_restDistValue.setValue(glm::distance(getPosition(), m_pWorld->FindClosestFood(getPosition())));
 	m_cutLogValue.setValue(getRawLogs());
-	//m_depositLogValue.setValue(getNumberOfLogs());
-	m_collectLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
-	m_buildHouseValue.setValue(getNumberOfLogs());
+	//m_collectLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
+	m_buildHouseValue.setValue(getNumberOfLogs() + m_pWorld->getCurrentStockpileLogs());
+	m_harvestFoodValue.setValue(m_pWorld->getCurrentStockpileFood());
+	//wander vlaue
+	m_wanderValue.setValue(0);
 
 
 	float fCurrentTime = (float)glfwGetTime();
 	if (fCurrentTime >= m_fLastReportTime + m_fReportTime)
 	{
 		system("cls");
+		std::cout << "SP Food" << m_pWorld->getCurrentStockpileFood() << "/" << m_pWorld->getMaxStockpileFood();
+		std::cout << "SP Logs" << m_pWorld->getCurrentStockpileLogs() << "/" << m_pWorld->getMaxStockpileLogs() << std::endl;
 	}
 
 	//Choose Best Action
@@ -133,18 +126,18 @@ void UtilityNPC::selectAction(float a_fdeltaTime)
 	{
 		harvestTree(a_fdeltaTime);
 	}
-	//else if (strBestAction == "depositLog")
-	//{
-	//	depositStockpileLog(a_fdeltaTime);
-	//}
-	else if (strBestAction == "collectLog")
+	else if (strBestAction == "harvestFood")
 	{
-		collectStockpileLog(a_fdeltaTime);
+		harvestFood(a_fdeltaTime);
 	}
 	else if (strBestAction == "buildHouse")
 	{
 
 		buildHouse(a_fdeltaTime);
+	}
+	else if (strBestAction == "wander")
+	{
+		wander(a_fdeltaTime);
 	}
 	
 	//std::cout << strBestAction.c_str << std::endl;

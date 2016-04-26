@@ -1,0 +1,14 @@
+﻿  UtilityNPC.cpp
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(14): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(21): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(28): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(35): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(42): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(49): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(75): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(76): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(77): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(78): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(80): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\nicholas.byrne\documents\complexgamesystems\behaviouralmathematics\behaviouralai\src\utilitynpc.cpp(81): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  BehaviouralAI.vcxproj -> C:\Users\nicholas.byrne\Documents\ComplexGameSystems\BehaviouralMathematics\BehaviouralAI\bin\BehaviouralAI_d.exe

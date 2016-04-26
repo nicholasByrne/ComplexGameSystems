@@ -7,6 +7,8 @@
 
 #include "gl_core_4_4.h"
 #include <GLFW\glfw3.h>
+#include <time.h>
+#include <glm\gtc\random.hpp>
 
 BaseNPC::BaseNPC(World* a_pWorld)
 {
@@ -19,6 +21,7 @@ BaseNPC::BaseNPC(World* a_pWorld)
 
 	m_fLastReportTime = 0.0f;
 	m_fReportTime = 1.0f;
+	m_fTimeAlive = 0.0f;
 
 	m_uiFood = 30;
 	m_uiWater = 30;
@@ -26,6 +29,9 @@ BaseNPC::BaseNPC(World* a_pWorld)
 
 	m_uiNumberOfLogs = 0;
 	m_uiRawLogs = 0;
+	m_uiHarvestedFood = 0;
+	m_fWanderTimer = 0.0f;
+	m_wanderDest = glm::vec3(0, 0, 0);
 
 
 	m_fLastFoodReductionTime = 0.0f;
@@ -46,18 +52,46 @@ void BaseNPC::update(float a_fdeltaTime)
 {
 	if (m_bAlive)
 	{
+		m_fTimeAlive += a_fdeltaTime;
 		selectAction(a_fdeltaTime);
 	
 		calculateStatusChange();
 		reportStatus();
 
 		checkAlive();
+
+		m_fWanderTimer -= a_fdeltaTime;
 	}
 }
 
 void BaseNPC::render()
 {
 	Gizmos::addAABBFilled(m_vPosition + glm::vec3(0, 2, 0), glm::vec3(0.5, 2, 0.5), glm::vec4(0.4, 0.4, 0.4, 1));
+}
+
+void BaseNPC::AssignNPCJob(NPCJob newJob)
+{
+	//Child, Farmer, Builder, Harvester, Dead, Unemployed
+	if (newJob = Child)
+	{
+
+	}
+	else if (newJob = Farmer)
+	{
+
+	}
+	else if (newJob = Builder)
+	{
+
+	}
+	else if (newJob = Harvester)
+	{
+
+	}
+	else
+	{
+		std::cout << "ERROR: Assigned newJob = " << newJob << std::endl;
+	}
 }
 
 void BaseNPC::collectWater(float a_fdeltaTime)
@@ -74,11 +108,19 @@ void BaseNPC::collectWater(float a_fdeltaTime)
 
 void BaseNPC::collectFood(float a_fdeltaTime)
 {
-	if (travelTo(m_pWorld->getFoodLocation(), a_fdeltaTime))
+	//if (travelTo(m_pWorld->getFoodLocation(), a_fdeltaTime))
+	//{
+	//	if (m_pWorld->interactWithFood())
+	//	{
+	//		m_uiFood += 20;
+	//		std::cout << "Collected Food!" << std::endl;
+	//	}
+	//}
+	if (travelTo(m_pWorld->getStockpileLocation(), a_fdeltaTime))
 	{
-		if (m_pWorld->interactWithFood())
+		if (m_pWorld->interactWithStockpile())
 		{
-			m_uiFood += 20;
+			m_uiFood += m_pWorld->removeFoodFromStockpile(20);
 			std::cout << "Collected Food!" << std::endl;
 		}
 	}
@@ -128,8 +170,9 @@ void BaseNPC::buildHouse(float a_fdeltaTime)
 		{
 			if (m_pWorld->interactWithStockpile())
 			{
-				m_pWorld->removeLogFromStockpile();
-				m_uiNumberOfLogs++;
+				m_uiNumberOfLogs = m_pWorld->removeLogsFromStockpile(m_uiNumberOfLogs);
+				//m_pWorld->removeLogsFromStockpile(m_uiNumberOfLogs);
+				//m_uiNumberOfLogs++;
 			}
 		}
 	}
@@ -148,8 +191,31 @@ void BaseNPC::buildHouse(float a_fdeltaTime)
 					m_uiNumberOfLogs--;
 					std::cout << "Built House!" << std::endl;
 					m_pWorld->addLogToHouse();
+					//m_uiNumberOfLogs = m_pWorld->addLogToHouse(m_uiNumberOfLogs);
 				}
 			}
+		}
+	}
+}
+
+void BaseNPC::harvestFood(float a_fdeltaTime)
+{
+	if (m_uiHarvestedFood <= 0)
+	{
+		if (travelTo(m_pWorld->getFoodLocation(), a_fdeltaTime))
+		{
+			if (m_pWorld->interactWithFood())
+			{
+				m_uiHarvestedFood += 40;
+				std::cout << "Harvested Food!" << std::endl;
+			}
+		}
+	}
+	else
+	{
+		if (travelTo(m_pWorld->getStockpileLocation(), a_fdeltaTime))
+		{
+			depositStockpileFood(a_fdeltaTime);
 		}
 	}
 }
@@ -166,9 +232,10 @@ void BaseNPC::depositStockpileLog(float a_fdeltaTime)
 		{
 			if (m_pWorld->interactWithStockpile())
 			{
-				m_uiRawLogs--;
+				//m_uiRawLogs--;
+				m_uiRawLogs = m_pWorld->addLogsToStockpile(m_uiRawLogs);
 				std::cout << "Placed log in stockpile!" << std::endl;
-				m_pWorld->addLogToStockpile();
+				//m_pWorld->addLogsToStockpile(m_uiRawLogs);
 			}
 		}
 	}
@@ -182,7 +249,7 @@ void BaseNPC::collectStockpileLog(float a_fdeltaTime)
 		{
 			if (m_pWorld->getCurrentStockpileLogs() > 0)
 			{
-				m_pWorld->removeLogFromStockpile();
+				m_pWorld->removeLogsFromStockpile(m_uiNumberOfLogs);
 				m_uiNumberOfLogs++;
 				std::cout << "Collected log from stockpile!" << std::endl;
 			}
@@ -192,6 +259,39 @@ void BaseNPC::collectStockpileLog(float a_fdeltaTime)
 			}
 		}
 	}
+}
+
+void BaseNPC::depositStockpileFood(float a_fdeltaTime)
+{
+	if (travelTo(m_pWorld->getStockpileLocation(), a_fdeltaTime))
+	{
+		if (m_uiHarvestedFood <= 0)
+		{
+			std::cout << "Don't have any Food to place in stockpile :(" << std::endl;
+		}
+		else
+		{
+			if (m_pWorld->interactWithStockpile())
+			{
+				m_uiHarvestedFood = m_pWorld->addFoodToStockpile(m_uiHarvestedFood);
+				std::cout << "Placed Food in stockpile!" << std::endl;
+			}
+		}
+	}
+}
+
+void BaseNPC::wander(float a_fdeltaTime)
+{
+
+	if (m_fWanderTimer <= 0.0f)
+	{
+		float x = glm::linearRand(-10.0f, 10.0f);
+		float z = glm::linearRand(-10.0f, 10.0f);
+		m_wanderDest = glm::vec3(x, 0.0f, z);
+
+		m_fWanderTimer = glm::linearRand(3.0f, 7.0f);
+	}
+	travelTo(m_wanderDest, a_fdeltaTime);
 }
 
 bool BaseNPC::travelTo(glm::vec3 a_vLoc, float a_fDeltaTime)

@@ -27,12 +27,16 @@ public:
 	unsigned int getCurrentHouseLogs() const { return m_uiHouseCurrentLogs; }
 	bool isHouseBuilt() { return m_uiHouseCurrentLogs == m_uiHouseLogsRequired;  }
 
-	void addLogToStockpile();
-	void removeLogFromStockpile();
+	float addLogsToStockpile(unsigned int logs); //Returns = logs that weren't deposited (0 if all fit)
+	float removeLogsFromStockpile(unsigned int logs); //Return = logs that were withdrawn (0 if was empty)
+	float addFoodToStockpile(unsigned int amount);
+	float removeFoodFromStockpile(unsigned int amount);
 	unsigned int getCurrentStockpileLogs() const { return m_uiStockpileCurrentLogs; }
-	unsigned int getMaxStockpileLogs() const { m_uiStockpileMaxLogs; }
+	unsigned int getMaxStockpileLogs() const { return m_uiStockpileMaxLogs; }
+	unsigned int getCurrentStockpileFood() const { return m_uiStockpileCurrentFood; }
+	unsigned int getMaxStockpileFood() const { return m_uiStockpileMaxFood; }
 
-	std::list<UtilityNPC*> NPCList;
+	std::vector<UtilityNPC*> NPCVector;
 	std::list<WorldObject*> worldObjectList;
 	std::vector<House*> houseVector;
 	std::vector<Food*> foodVector;
@@ -71,6 +75,8 @@ private:
 	unsigned int m_uiHouseCurrentLogs;
 	unsigned int m_uiStockpileCurrentLogs;
 	unsigned int m_uiStockpileMaxLogs;
+	unsigned int m_uiStockpileCurrentFood;
+	unsigned int m_uiStockpileMaxFood;
 
 	glm::vec3 m_houseLocation;
 	glm::vec3 m_treeLocation;
