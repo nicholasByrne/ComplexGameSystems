@@ -28,5 +28,5 @@ private:
 
 	AIController* m_pAIController;
 	World*		m_pWorld;
-	BaseNPC*	m_pNPC;
+	//BaseNPC*	m_pNPC;
 };

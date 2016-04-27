@@ -50,6 +50,10 @@ private:
 
 	//enum NPCJob { Child, Farmer, Builder, Harvester, Dead Unemployed };
 	std::vector<NPCJob> m_NPCJobVector;
+	
+	bool canSpawn = true;
+	float reassignTimer = 0.0f;
+
 };
 
 
@@ -58,7 +62,8 @@ private:
 
 
 
-
+//Change Harvester Desire to be = to
+// max - current(Linear?)
 
 
 

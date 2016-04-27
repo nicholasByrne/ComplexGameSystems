@@ -38,7 +38,7 @@ bool UtilitySystemApplication::startup() {
 	m_camera->setLookAtFrom(vec3(10, 10, 10), vec3(0));
 	
 	m_pWorld = new World();
-	m_pNPC = new UtilityNPC(m_pWorld);
+	//m_pNPC = new UtilityNPC(m_pWorld);
 	m_pAIController = new AIController(m_pWorld);
 	//m_pAIController->AddNPC();
 	//m_pAIController->AddNPC();
@@ -72,7 +72,7 @@ bool UtilitySystemApplication::update(float deltaTime) {
 	// update the camera's movement
 	m_camera->update(deltaTime);
 
-	m_pNPC->update(deltaTime);
+	//m_pNPC->update(deltaTime);
 	m_pAIController->Update(deltaTime);
 
 	// clear the gizmos out for this frame
@@ -98,7 +98,7 @@ void UtilitySystemApplication::draw() {
 
 
 	m_pWorld->render();
-	m_pNPC->render();
+	//m_pNPC->render();
 	m_pAIController->Draw();
 
 	// display the 3D gizmos

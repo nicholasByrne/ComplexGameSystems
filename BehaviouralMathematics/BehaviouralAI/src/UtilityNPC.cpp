@@ -53,15 +53,15 @@ UtilityNPC::UtilityNPC(World * pWorld) : BaseNPC(pWorld)
 	//Wander Around
 	m_wanderValue.setNormalizationType(UtilityValue::INVERSE_LINEAR);
 	m_wanderValue.setMinMaxValues(0, 1);
-	m_wanderValue.setValue(0);
+	m_wanderValue.setValue(0.5f);
 	UtilityScore* pWanderSource = new UtilityScore();
-	pWanderSource->addUtilityValue(&m_wanderValue, 0.2f);
+	pWanderSource->addUtilityValue(&m_wanderValue, 1.f);
 	m_pUtilityScoreMap["wander"] = pWanderSource;
 
-	m_wanderJobValue.setNormalizationType(UtilityValue::LINEAR);
-	m_wanderJobValue.setMinMaxValues(0, 1);
-	m_wanderValue.setValue(1.f);
-	pWanderSource->addUtilityValue(&m_wanderJobValue, 1.f);
+	//m_wanderJobValue.setNormalizationType(UtilityValue::LINEAR);
+	//m_wanderJobValue.setMinMaxValues(0, 1);
+	//m_wanderJobValue.setValue(1.f);
+	//pWanderSource->addUtilityValue(&m_wanderJobValue, 0.5f);
 }
 
 UtilityNPC::~UtilityNPC()
@@ -75,21 +75,20 @@ void UtilityNPC::selectAction(float a_fdeltaTime)
 	m_waterValue.setValue(getWaterValue());
 	m_foodValue.setValue(getFoodValue());
 	m_restValue.setValue(getRestValue());
-	m_cutLogValue.setValue(getRawLogs());
-	//m_collectLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
+	m_cutLogValue.setValue(m_pWorld->getCurrentStockpileLogs());
 	m_buildHouseValue.setValue(getNumberOfLogs() + m_pWorld->getCurrentStockpileLogs());
 	m_harvestFoodValue.setValue(m_pWorld->getCurrentStockpileFood());
-	//wander vlaue
-	m_wanderValue.setValue(0);
+	m_wanderValue.setValue(0.5f);
+	m_pUtilityScoreMap["wander"]->setModifier(0, 0.5f);
 
 
 	float fCurrentTime = (float)glfwGetTime();
-	if (fCurrentTime >= m_fLastReportTime + m_fReportTime)
-	{
-		system("cls");
-		std::cout << "SP Food" << m_pWorld->getCurrentStockpileFood() << "/" << m_pWorld->getMaxStockpileFood();
-		std::cout << "SP Logs" << m_pWorld->getCurrentStockpileLogs() << "/" << m_pWorld->getMaxStockpileLogs() << std::endl;
-	}
+	//if (fCurrentTime >= m_fLastReportTime + m_fReportTime)
+	//{
+	//	system("cls");
+	//	std::cout << "SP Food" << m_pWorld->getCurrentStockpileFood() << "/" << m_pWorld->getMaxStockpileFood();
+	//	std::cout << "SP Logs" << m_pWorld->getCurrentStockpileLogs() << "/" << m_pWorld->getMaxStockpileLogs() << std::endl;
+	//}
 
 	//Choose Best Action
 	float fBestScore = 0.0f;
@@ -103,10 +102,10 @@ void UtilityNPC::selectAction(float a_fdeltaTime)
 			strBestAction = score.first;
 		}
 		//float fCurrentTime = (float)glfwGetTime();
-		if (fCurrentTime >= m_fLastReportTime + m_fReportTime)
-		{
-			std::cout << score.first.c_str() << " " << fThisScore << std::endl;
-		}
+		//if (fCurrentTime >= m_fLastReportTime + m_fReportTime)
+		//{
+		//	std::cout << score.first.c_str() << " " << fThisScore << std::endl;
+		//}
 	}
 
 	//Do Best Action

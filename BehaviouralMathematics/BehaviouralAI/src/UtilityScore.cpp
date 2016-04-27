@@ -36,4 +36,11 @@ namespace UtilitySystem
 
 		return fScore;
 	}
+	void UtilityScore::setModifier(unsigned int index, float modifier)
+	{
+		if (index <= m_vUtilityValues.size())
+		{
+			m_vUtilityValues[index].fModifier = modifier;
+		}
+	}
 }

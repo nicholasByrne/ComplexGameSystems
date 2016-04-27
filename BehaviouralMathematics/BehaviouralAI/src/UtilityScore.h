@@ -18,6 +18,8 @@ namespace UtilitySystem
 
 		float getUtilityScore();
 
+		void setModifier(unsigned int index, float modifier);
+
 		//void addUtilityScore(UtilityScore* a_pScore);
 		
 	private:

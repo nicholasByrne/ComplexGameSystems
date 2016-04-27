@@ -56,7 +56,7 @@ void BaseNPC::update(float a_fdeltaTime)
 		selectAction(a_fdeltaTime);
 	
 		calculateStatusChange();
-		reportStatus();
+		//reportStatus();
 
 		checkAlive();
 
@@ -72,21 +72,25 @@ void BaseNPC::render()
 void BaseNPC::AssignNPCJob(NPCJob newJob)
 {
 	//Child, Farmer, Builder, Harvester, Dead, Unemployed
-	if (newJob = Child)
+	if (newJob == Child)
 	{
-
+		m_NPCJob = Child;
 	}
-	else if (newJob = Farmer)
+	else if (newJob == Farmer)
 	{
-
+		m_NPCJob = Farmer;
 	}
-	else if (newJob = Builder)
+	else if (newJob == Builder)
 	{
-
+		m_NPCJob = Builder;
 	}
-	else if (newJob = Harvester)
+	else if (newJob == Harvester)
 	{
-
+		m_NPCJob = Harvester;
+	}
+	else if (newJob == Unemployed)
+	{
+		m_NPCJob = Unemployed;
 	}
 	else
 	{
@@ -101,7 +105,7 @@ void BaseNPC::collectWater(float a_fdeltaTime)
 		if (m_pWorld->interactWithWater())
 		{
 			m_uiWater += 20;
-			std::cout << "Collected Water!" << std::endl;
+			//std::cout << "Collected Water!" << std::endl;
 		}
 	}
 }
@@ -121,7 +125,7 @@ void BaseNPC::collectFood(float a_fdeltaTime)
 		if (m_pWorld->interactWithStockpile())
 		{
 			m_uiFood += m_pWorld->removeFoodFromStockpile(20);
-			std::cout << "Collected Food!" << std::endl;
+			//std::cout << "Collected Food!" << std::endl;
 		}
 	}
 }
@@ -133,7 +137,7 @@ void BaseNPC::rest(float a_fdeltaTime)
 		if (m_pWorld->interactWithRested())
 		{
 			m_uiRested += 20;
-			std::cout << "Resting!" << std::endl;
+			//std::cout << "Resting!" << std::endl;
 		}
 	}
 }
@@ -157,7 +161,7 @@ void BaseNPC::chopTree(float a_fdeltaTime)
 		if (m_pWorld->interactWithTree())
 		{
 			m_uiRawLogs++;
-			std::cout << "Collected Log!" << std::endl;
+			//std::cout << "Collected Log!" << std::endl;
 		}
 	}
 }
@@ -182,14 +186,14 @@ void BaseNPC::buildHouse(float a_fdeltaTime)
 		{
 			if (m_uiNumberOfLogs <= 0)
 			{
-				std::cout << "Don't have any logs to build with :(" << std::endl;
+				//std::cout << "Don't have any logs to build with :(" << std::endl;
 			}
 			else
 			{
 				if (m_pWorld->interactWithHouse())
 				{
 					m_uiNumberOfLogs--;
-					std::cout << "Built House!" << std::endl;
+					//std::cout << "Built House!" << std::endl;
 					m_pWorld->addLogToHouse();
 					//m_uiNumberOfLogs = m_pWorld->addLogToHouse(m_uiNumberOfLogs);
 				}
@@ -207,7 +211,7 @@ void BaseNPC::harvestFood(float a_fdeltaTime)
 			if (m_pWorld->interactWithFood())
 			{
 				m_uiHarvestedFood += 40;
-				std::cout << "Harvested Food!" << std::endl;
+				//std::cout << "Harvested Food!" << std::endl;
 			}
 		}
 	}
@@ -226,7 +230,7 @@ void BaseNPC::depositStockpileLog(float a_fdeltaTime)
 	{
 		if (m_uiRawLogs <= 0)
 		{
-			std::cout << "Don't have any logs to place in stockpile :(" << std::endl;
+			//std::cout << "Don't have any logs to place in stockpile :(" << std::endl;
 		}
 		else
 		{
@@ -234,7 +238,7 @@ void BaseNPC::depositStockpileLog(float a_fdeltaTime)
 			{
 				//m_uiRawLogs--;
 				m_uiRawLogs = m_pWorld->addLogsToStockpile(m_uiRawLogs);
-				std::cout << "Placed log in stockpile!" << std::endl;
+				//std::cout << "Placed log in stockpile!" << std::endl;
 				//m_pWorld->addLogsToStockpile(m_uiRawLogs);
 			}
 		}
@@ -274,7 +278,7 @@ void BaseNPC::depositStockpileFood(float a_fdeltaTime)
 			if (m_pWorld->interactWithStockpile())
 			{
 				m_uiHarvestedFood = m_pWorld->addFoodToStockpile(m_uiHarvestedFood);
-				std::cout << "Placed Food in stockpile!" << std::endl;
+				//std::cout << "Placed Food in stockpile!" << std::endl;
 			}
 		}
 	}
@@ -322,18 +326,21 @@ void BaseNPC::checkAlive()
 	{
 		std::cout << "Agent has starved to death!" << std::endl;
 		m_bAlive = false;
+		AssignNPCJob(Dead);
 	}
 
 	if (m_uiWater == 0)
 	{
 		std::cout << "Agent has dehydrated!" << std::endl;
 		m_bAlive = false;
+		AssignNPCJob(Dead);
 	}
 
 	if (m_uiRested == 0)
 	{
 		std::cout << "Agent has died due to exhaustion!!" << std::endl;
 		m_bAlive = false;
+		AssignNPCJob(Dead);
 	}
 }
 

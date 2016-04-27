@@ -3,6 +3,8 @@
 #include "WorldObject.h"
 #include "Buildings.h"
 
+#include <GLFW/glfw3.h>
+
 AIController::AIController(World* a_world)
 {
 	m_pWorld = a_world;
@@ -28,6 +30,8 @@ AIController::AIController(World* a_world)
 	pBuilderValue->addUtilityValue(&m_builderValue, 0.70f);
 	m_pUtilityScoreMap["AssignBuilder"] = pBuilderValue;
 	
+	AddNPC();
+	AddNPC();
 }
 
 
@@ -38,6 +42,28 @@ AIController::~AIController()
 
 void AIController::Update(float a_fdeltaTime)
 {
+	reassignTimer -= a_fdeltaTime;
+
+	if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_SPACE))
+	{
+		if (canSpawn)
+		{
+			AddNPC();
+			canSpawn = false;
+		}
+	}
+	else
+	{
+		canSpawn = true;
+	}
+
+	//Reassign Jobs
+	if (reassignTimer <= 0)
+	{
+		CalculateNPCJobs();
+		reassignTimer = 5;
+	}
+
 	for (std::vector<UtilityNPC*>::const_iterator iter = m_pWorld->NPCVector.begin(); iter != m_pWorld->NPCVector.end(); iter++)
 	{
 		(*iter)->update(a_fdeltaTime);
@@ -170,17 +196,20 @@ float AIController::CalculateHouseSupply()
 //Child, Farmer, Builder, Harvester, Dead, Unemployed
 void AIController::CalculateNPCJobs()
 {
-	if (m_NPCJobVector.size() != m_pWorld->NPCVector.size())
-	{
-		std::cout << "NPCJobVector.size() != NPCList.size()" << std::endl;
-	}
+	//if (m_NPCJobVector.size() != m_pWorld->NPCVector.size())
+	//{
+	//	std::cout << "NPCJobVector.size() != NPCList.size()" << std::endl;
+	//}
+	system("cls");
 
 	//Calculated current jobs
 	unsigned int CurChildren, CurFarmer, CurBuilder, CurHarvester, CurDead, CurUnpemployed;
-	for (unsigned int i = 0; i < m_NPCJobVector.size(); ++i)
+	CurChildren = CurFarmer = CurBuilder = CurHarvester = CurDead = CurUnpemployed = 0;
+	//for (unsigned int i = 0; i < m_NPCJobVector.size(); ++i)
+	for (unsigned int i = 0; i < m_pWorld->NPCVector.size(); ++i)
 	{
 		//Check if any children grew up 
-		if (m_pWorld->NPCVector[i]->getNPCJob() == Child && m_pWorld->NPCVector[i]->getTimeAlive() > 20.0f)
+		if (m_pWorld->NPCVector[i]->getNPCJob() == Child && m_pWorld->NPCVector[i]->getTimeAlive() > 1.0f)
 		{
 			m_pWorld->NPCVector[i]->AssignNPCJob(Unemployed);
 		}
@@ -198,6 +227,7 @@ void AIController::CalculateNPCJobs()
 		else if (m_pWorld->NPCVector[i]->getNPCJob() == Unemployed)
 			CurUnpemployed++;
 	}
+	std::cout << "Current - Builder: " << CurBuilder << " - Farmer: " << CurFarmer << " - Harvester: " << CurHarvester << " - Child: " << CurChildren << " - Dead: " << CurDead << std::endl;
 
 	//Update MapValues
 	//UtilityValue.SetValue(GetVarValue());
@@ -233,7 +263,7 @@ void AIController::CalculateNPCJobs()
 			idealHarvester++;
 			m_harvesterValue.setValue(m_pWorld->getCurrentStockpileLogs() + (idealHarvester * 5));
 		}
-		else if (strBestAction == "AssignBuilder");
+		else if (strBestAction == "AssignBuilder")
 		{
 			idealBuilder++;
 			m_builderValue.setValue(CalculateHouseDemand() - (idealBuilder * 3));
@@ -250,18 +280,22 @@ void AIController::CalculateNPCJobs()
 			if ((*iter)->getNPCJob() == Builder && (CurBuilder > idealBuilder))
 			{
 				ReassignNPC.push_back((*iter));
+				CurBuilder--;
 			}
 			else if ((*iter)->getNPCJob() == Farmer && (CurFarmer > idealFarmer))
 			{
 				ReassignNPC.push_back((*iter));
+				CurFarmer--;
 			}
 			else if ((*iter)->getNPCJob() == Harvester && (CurHarvester > idealHarvester))
 			{
 				ReassignNPC.push_back((*iter));
+				CurHarvester--;
 			}
 			else if ((*iter)->getNPCJob() == Unemployed)
 			{
 				ReassignNPC.push_back((*iter));
+				CurUnpemployed--;
 			}
 		}
 		//reassign
@@ -271,18 +305,28 @@ void AIController::CalculateNPCJobs()
 			{
 				ReassignNPC.back()->AssignNPCJob(Builder);
 				ReassignNPC.pop_back();
+				CurBuilder++;
 			}
 			else if (idealFarmer > CurFarmer)
 			{
 				ReassignNPC.back()->AssignNPCJob(Farmer);
 				ReassignNPC.pop_back();
+				CurFarmer++;
 			}
 			else if (idealHarvester > CurHarvester)
 			{
 				ReassignNPC.back()->AssignNPCJob(Harvester);
 				ReassignNPC.pop_back();
+				CurHarvester++;
 			}
 		}
+	}
+	std::cout << "Ideal   - Builder: " << idealBuilder << " - Farmer: " << idealFarmer << " - Harvester: " << idealHarvester  << "\n" << std::endl;// " - Child: " << CurChildren << " - Dead: " << CurDead << std::endl;
 
+	int i = 0;
+	for (std::vector<UtilityNPC*>::const_iterator iter = m_pWorld->NPCVector.begin(); iter != m_pWorld->NPCVector.end(); iter++)
+	{
+		std::cout << "NPC(" << i << ") - " << (*iter)->getNPCJob() << std::endl;//(*iter)->update(a_fdeltaTime);
+		i++;
 	}
 }
